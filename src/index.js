@@ -1,19 +1,21 @@
 
 import './css/styles.css';
+import getRefs from "./refs"
 import { fetchCountries } from './fetchCountries';
 import debounce from 'lodash.debounce';
 import Notiflix from 'notiflix';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
-import getRefs from "./refs"
+
 
 const refs = getRefs();
-
 const DEBOUNCE_DELAY = 300;
+
+refs.searchBox.addEventListener('input', debounce(onInputChange, DEBOUNCE_DELAY));
 
 function onInputChange (e) {
     onEmptyInput();
-  if (e.target.value != '') {
-    fetchCountries(e.target.value)
+  if (e.target.value.trim() != '') {
+    fetchCountries(e.target.value.trim())
       .then(renderMarkup)
       .catch(error => {
         Notify.failure('Oops, there is no country with that name');
@@ -61,4 +63,3 @@ function renderCountryCard(nameCountries) {
   refs.countriesContainerEl.insertAdjacentHTML('beforeend', markup);
 }
 
-refs.searchBox.addEventListener('input', debounce(onInputChange, DEBOUNCE_DELAY));
